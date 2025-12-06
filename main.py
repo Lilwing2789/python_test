@@ -18,7 +18,7 @@ from pages import UrbanRoutesPage
 class TestUrbanRoutes:
     @classmethod
     def setup_class(cls):
-        # do not modify - we need additional logging enabled in order to retrieve phone confirmation code
+        # Enable logging for phone confirmation code retrieval
         from selenium.webdriver import DesiredCapabilities
         capabilities = DesiredCapabilities.CHROME
         capabilities["goog:loggingPrefs"] = {'performance': 'ALL'}
@@ -27,14 +27,15 @@ class TestUrbanRoutes:
         if not helpers.is_url_reachable(data.BASE_URL):
             raise RuntimeError("Target URL is not reachable. Aborting test setup.")
 
+
         cls.driver = webdriver.Chrome(desired_capabilities=capabilities)
         cls.page = UrbanRoutesPage(cls.driver)
         cls.page.open(data.BASE_URL)
 
-    def test_set_address(self):
-        self.page.set_addresses(data.FROM_ADDRESS, data.TO_ADDRESS)
-        assert self.driver.find_element(*self.page.FROM_INPUT).get_attribute("value") == data.FROM_ADDRESS
-        assert self.driver.find_element(*self.page.TO_INPUT).get_attribute("value") == data.TO_ADDRESS
+    def test_set_route(self):
+        self.page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        assert self.page.get_from() == data.ADDRESS_FROM
+        assert self.page.get_to() == data.ADDRESS_TO
 
     def test_select_supportive_plan(self):
         self.page.click_call_taxi()
@@ -71,3 +72,4 @@ class TestUrbanRoutes:
     @classmethod
     def teardown_class(cls):
         cls.driver.quit()
+

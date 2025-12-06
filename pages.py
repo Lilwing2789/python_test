@@ -1,13 +1,10 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class UrbanRoutesPage:
     def __init__(self, driver: WebDriver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
 
     def open(self, base_url: str):
         self.driver.get(base_url)
@@ -33,9 +30,15 @@ class UrbanRoutesPage:
     CAR_SEARCH_MODAL = (By.ID, "car-search")
 
     # Methods
-    def set_addresses(self, from_address, to_address):
+    def set_route(self, from_address, to_address):
         self.driver.find_element(*self.FROM_INPUT).send_keys(from_address)
         self.driver.find_element(*self.TO_INPUT).send_keys(to_address)
+
+    def get_from(self):
+        return self.driver.find_element(*self.FROM_INPUT).get_attribute("value")
+
+    def get_to(self):
+        return self.driver.find_element(*self.TO_INPUT).get_attribute("value")
 
     def click_call_taxi(self):
         self.driver.find_element(*self.CALL_TAXI_BUTTON).click()
@@ -77,3 +80,4 @@ class UrbanRoutesPage:
         self.write_driver_comment(message_for_driver)
         self.driver.find_element(*self.ORDER_BUTTON).click()
         return self.driver.find_element(*self.CAR_SEARCH_MODAL).is_displayed()
+
