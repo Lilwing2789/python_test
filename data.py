@@ -1,0 +1,8 @@
+BASE_URL = "https://cnt-f4865370-e46b-4c5c-b7ed-f13cb94b045f.containerhub.tripleten-services.com"
+ADDRESS_FROM = "221B Baker Street"
+ADDRESS_TO = "10 Downing Street"
+PHONE_NUMBER = "+15555550123"
+CARD_NUMBER = "4111111111111111"
+CARD_CODE = "123"
+DRIVER_COMMENT = "Please ring the bell."
+DRIVER_MESSAGE_FOR_ORDER = "Supportive tariff please."
