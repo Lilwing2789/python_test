@@ -10,11 +10,7 @@ class UrbanRoutesPage:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
-    def open(self, base_url: str):
-        self.driver.get(base_url)
-
     # --- LOCATORS ---
-
     FROM_INPUT = (By.ID, "from")
     TO_INPUT = (By.ID, "to")
     CALL_TAXI_BUTTON = (By.CSS_SELECTOR, "button.button.round")
@@ -35,7 +31,7 @@ class UrbanRoutesPage:
     ADD_CARD_BUTTON = (By.CSS_SELECTOR, ".pp-plus-container")
     CARD_NUMBER_INPUT = (By.ID, "card-number")
     CARD_CODE_INPUT = (By.NAME, "code")
-    LINK_CARD_BUTTON = (By.XPATH, "//button[contains(text(), 'Link')]")  # Changed to XPath text
+    LINK_CARD_BUTTON = (By.XPATH, "//button[contains(text(), 'Link')]")
 
     # Extras
     COMMENT_TEXTAREA = (By.ID, "comment")
@@ -71,31 +67,23 @@ class UrbanRoutesPage:
             self.driver.execute_script("arguments[0].click();", supportive_card)
 
     def input_phone_number(self, phone_number):
-        # Open Modal
         WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.PHONE_BUTTON)).click()
-
-        # Type Number
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.PHONE_INPUT)).send_keys(phone_number)
 
-        # VALIDATION TRICK: Click the modal background to blur the input
-        # This forces the app to check the number and enable the button
+        # Click background to trigger validation
         try:
             self.driver.find_element(By.CSS_SELECTOR, ".modal").click()
         except:
             self.driver.find_element(By.TAG_NAME, "body").click()
 
-        time.sleep(1)  # Wait for button to enable
-
-        # Force Click Next (JS)
+        time.sleep(1)
         next_btn = self.driver.find_element(*self.PHONE_NEXT_BUTTON)
         self.driver.execute_script("arguments[0].click();", next_btn)
 
     def enter_sms_code_and_confirm(self, confirmation_code):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.PHONE_CONFIRM_CODE_INPUT)).send_keys(
             confirmation_code)
-
         time.sleep(1)
-        # Force Click Confirm (JS)
         confirm_btn = self.driver.find_element(*self.PHONE_CONFIRM_BUTTON)
         self.driver.execute_script("arguments[0].click();", confirm_btn)
 
@@ -106,13 +94,9 @@ class UrbanRoutesPage:
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.CARD_NUMBER_INPUT)).send_keys(
             card_number)
         self.driver.find_element(*self.CARD_CODE_INPUT).send_keys(card_code)
-
-        # VALIDATION TRICK: Tab away + Click background
         self.driver.find_element(*self.CARD_CODE_INPUT).send_keys(Keys.TAB)
-        time.sleep(1)
 
-        # Force Click Link (JS)
-        # We search specifically for the button containing "Link" to be sure
+        time.sleep(1)
         link_btn = self.driver.find_element(*self.LINK_CARD_BUTTON)
         self.driver.execute_script("arguments[0].click();", link_btn)
 
