@@ -1,6 +1,5 @@
-import requests
-import json
-import time
+# Retrieves Phone code. Do not change
+# File should be completely unchanged
 
 
 def retrieve_phone_code(driver) -> str:
