@@ -15,7 +15,7 @@ class UrbanRoutesPage:
     TO_INPUT = (By.ID, "to")
     CALL_TAXI_BUTTON = (By.CSS_SELECTOR, "button.button.round")
 
-    # Tariff
+    # Tariff'''
     SUPPORTIVE_TARIFF = (By.XPATH, "//div[contains(@class, 'tcard') and .//div[contains(text(), 'Supportive')]]")
     ACTIVE_TARIFF = (By.CSS_SELECTOR, ".tcard.active")
 
@@ -23,13 +23,16 @@ class UrbanRoutesPage:
     PHONE_BUTTON = (By.CLASS_NAME, "np-button")
     PHONE_INPUT = (By.ID, "phone")
     PHONE_NEXT_BUTTON = (By.CSS_SELECTOR, "button.button.full")
-    PHONE_CONFIRM_CODE_INPUT = (By.ID, "phone-confirm-code")
+    PHONE_CONFIRM_CODE_INPUT = (By.ID, "code")
+   #replaced above PHONE_CONFIRM_CODE_INPUT = (By.ID, "phone-confirm-code")
     PHONE_CONFIRM_BUTTON = (By.XPATH, "//button[contains(text(), 'Confirm')]")
 
     # Payment
-    PAYMENT_METHOD_BUTTON = (By.CSS_SELECTOR, ".pp-text")
+    PAYMENT_METHOD_BUTTON = (By.CSS_SELECTOR, ".pp-value-text")
+    #replaced w/ above PAYMENT_METHOD_BUTTON = (By.CSS_SELECTOR, ".pp-text")
     ADD_CARD_BUTTON = (By.CSS_SELECTOR, ".pp-plus-container")
-    CARD_NUMBER_INPUT = (By.ID, "card-number")
+    CARD_NUMBER_INPUT = (By.ID, "number")
+    #replaced w/ above CARD_NUMBER_INPUT = (By.ID, "card-number")
     CARD_CODE_INPUT = (By.NAME, "code")
     LINK_CARD_BUTTON = (By.XPATH, "//button[contains(text(), 'Link')]")
 

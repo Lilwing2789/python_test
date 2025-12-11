@@ -3,45 +3,52 @@ import json
 import time
 
 
-def retrieve_phone_code(driver):
-    """
-    Retrieves the confirmation code from the browser performance logs.
-    Includes a sleep timer to poll for the code effectively.
-    """
+def retrieve_phone_code(driver) -> str:
+    """This code retrieves phone confirmation number and returns it as a string.
+    Use it when application waits for the confirmation code to pass it into your tests.
+    The phone confirmation code can only be obtained after it was requested in application."""
+
+    import json
+    import time
+    from selenium.common import WebDriverException
     code = None
     for i in range(10):
         try:
-            # Get performance logs
-            logs = [log["message"] for log in driver.get_log('performance') if log.get("message")]
-
+            logs = [log["message"] for log in driver.get_log('performance') if log.get("message")
+                    and 'api/v1/number?number' in log.get("message")]
             for log in reversed(logs):
                 message_data = json.loads(log)["message"]
-                message_body = message_data.get("message", {})
+                body = driver.execute_cdp_cmd('Network.getResponseBody',
+                                              {'requestId': message_data["params"]["requestId"]})
+                code = ''.join([x for x in body['body'] if x.isdigit()])
+        except WebDriverException:
+            time.sleep(1)
+            continue
+        if not code:
+            raise Exception("No phone confirmation code found.\n"
+                            "Please use retrieve_phone_code only after the code was requested in your application.")
+        return code
 
-                # Check if this log entry is a network response
-                if message_body.get("method") == "Network.responseReceived":
-                    url = message_body.get("params", {}).get("response", {}).get("url", "")
-
-                    # We only care about the phone auth response
-                    if "/api/v1/auth/phone" in url:
-                        request_id = message_body["params"]["requestId"]
-                        body = driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': request_id})
-                        code = body['body']['code']
-                        # Once we find the code, return it immediately!
-                        return code
-        except Exception:
-            pass
-
-        # CRITICAL FIX: Wait 1 second before checking again
-        # Without this, the loop finishes instantly before the SMS arrives.
-        time.sleep(1)
-
-    return code
-
-
+# Checks if Routes is up and running. Do not change
 def is_url_reachable(url):
+    """Check if the URL can be reached. Pass the URL for Urban Routes as a parameter.
+    If it can be reached, it returns True, otherwise it returns False"""
+
+    import ssl
+    import urllib.request
+
     try:
-        response = requests.get(url)
-        return response.status_code == 200
-    except requests.exceptions.RequestException:
-        return False
+        ssl_ctx = ssl.create_default_context()
+        ssl_ctx.check_hostname = False
+        ssl_ctx.verify_mode = ssl.CERT_NONE
+
+        with urllib.request.urlopen(url, context=ssl_ctx) as response:
+            # print("Response Status Code:", response.status) #for debugging purposes
+            if response.status == 200:
+                 return True
+            else:
+                return False
+    except Exception as e:
+        print (e)
+
+    return False

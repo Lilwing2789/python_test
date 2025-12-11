@@ -8,15 +8,10 @@ class TestUrbanRoutes:
 
     @classmethod
     def setup_class(cls):
-        # 1. Setup Chrome Options
-        options = Options()
-        options.set_capability("goog:loggingPrefs", {'performance': 'ALL'})
-
-        # 2. Initialize Driver
-        cls.driver = webdriver.Chrome(options=options)
-        cls.driver.maximize_window()
-        cls.driver.implicitly_wait(5)
-
+        from selenium.webdriver import DesiredCapabilities
+        capabilities = DesiredCapabilities.CHROME
+        capabilities["goog:loggingPrefs"] = {'performance': 'ALL'}
+        cls.driver = webdriver.Chrome()
         # 3. Initialize Page Object
         cls.page = UrbanRoutesPage(cls.driver)
 
